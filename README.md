@@ -83,9 +83,9 @@ install_hook(c)
 
 - [x] [ptipython](https://github.com/prompt-toolkit/ptpython): Same as
   [ipython](https://github.com/ipython/ipython).
-- [ ] [bpython](https://github.com/bpython/bpython)
-- [ ] [xonsh](https://github.com/xonsh/xonsh)
-- [ ] [mypython](https://github.com/asmeurer/mypython): Won't fix.
+- [x] [bpython](https://github.com/bpython/bpython)
+- [x] [xonsh](https://github.com/xonsh/xonsh)
+- [x] [mypython](https://github.com/asmeurer/mypython): Won't fix.
   - configure file: non-exist.
 
 `install_hook()` must be after the customization of the prompt string and best
