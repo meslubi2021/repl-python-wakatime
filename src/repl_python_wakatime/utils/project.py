@@ -1,12 +1,13 @@
 """Project
 ==========
 """
+
 import os
-from typing import Callable
+from collections.abc import Callable
 
 
 def get_project(
-    filenames: list[str] = [".git"],
+    filenames: list[str] | None = None,
     detect_func: Callable[[str], bool] = os.path.isdir,
 ) -> str:
     """Get project. Its function is like ``git rev-parse --show-toplevel``.
@@ -17,10 +18,12 @@ def get_project(
     use current directory as ``project``.
 
     :param filenames:
-    :type filenames: list[str]
+    :type filenames: list[str] | None
     :param detect_func:
     :type detect_func: Callable[[str], bool]
     """
+    if filenames is None:
+        filenames = [".git"]
     cwd = os.getcwd()
     project = cwd
     oldproject = ""

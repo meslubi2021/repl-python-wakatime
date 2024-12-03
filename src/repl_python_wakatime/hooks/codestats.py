@@ -5,6 +5,7 @@ Refer `code-stats-vim
 <https://gitlab.com/code-stats/code-stats-vim/-/blob/master/pythonx/codestats.py>
 `_.
 """
+
 import json
 import logging
 import threading
@@ -74,8 +75,7 @@ class CodeStats:
         self,
         api_key: str,
         url: str = "https://codestats.net/api/my/pulses",
-        language: str = "python",
-        language_type: str = "Terminal (%s)",
+        language_type: str = "Terminal (python)",
     ) -> None:
         """Init.
 
@@ -91,7 +91,7 @@ class CodeStats:
         """
         self.url = url
         self.api_key = api_key
-        self.language_type = language_type % language
+        self.language_type = language_type
         self.xp_dict = {language_type: 0}
 
         self.sem = threading.Semaphore()
@@ -130,16 +130,17 @@ class CodeStats:
 
         headers = {
             "Content-Type": "application/json",
-            "User-Agent": "code-stats-python/{0}".format(__version__),
+            "User-Agent": f"code-stats-python/{__version__}",
             "X-API-Token": self.api_key,
             "Accept": "*/*",
         }
 
         # after lock is released we can send the payload
         utc_now = datetime.now().astimezone().isoformat()
-        pulse_json = json.dumps(
-            {"coded_at": "{0}".format(utc_now), "xps": xp_list}
-        ).encode("utf-8")
+        pulse_json = json.dumps({
+            "coded_at": f"{utc_now}",
+            "xps": xp_list,
+        }).encode("utf-8")
         req = Request(url=self.url, data=pulse_json, headers=headers)
         error = ""
         try:
@@ -149,7 +150,7 @@ class CodeStats:
         except URLError as e:
             try:
                 # HTTP error
-                error = "{0} {1}".format(
+                error = "{} {}".format(
                     e.code,  # type: ignore
                     e.read().decode("utf-8"),  # type: ignore
                 )
@@ -160,9 +161,7 @@ class CodeStats:
             # SSL certificate error (eg. a public wifi redirects traffic)
             error = e
         except HTTPException as e:
-            error = "HTTPException on send data. Msg: {0}\nDoc?:{1}".format(
-                e.message, e.__doc__  # type: ignore
-            )
+            error = f"HTTPException on send data. \nDoc: {e.__doc__}"
         if error:
             logger.error(error)
 
